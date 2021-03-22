@@ -18,25 +18,17 @@ public class UsersResource {
     private LoginManager loginManager;
 
     @GET
-    public Response dostanVsechny(UserToken token) {
-        if (!loginManager.validate(token))
-            return Response.status(401, "invalid token").build();
-        return Response.ok(userManager.dostanJmenos()).build();
-    }
-
-    @GET
-    @Path("/test")
-    public Response fckit(@HeaderParam("token") String token) {
-        if (!loginManager.validate(token))
-            return Response.status(401, "invalid token").build();
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getUsers() {
         return Response.ok(userManager.dostanJmenos()).build();
     }
 
     @GET
     @Path("{id}")
     public Response dostanUsera(UserToken token, @PathParam("id") int id) {
-        if (!loginManager.validate(token))
-            return Response.status(401, "invalid token").build();
+        //if (!loginManager.validate(token))
+        //    return Response.status(401, "invalid token").build();
         return Response.ok(userManager.dostanJmenos(id)).build();
     }
 
@@ -50,6 +42,8 @@ public class UsersResource {
 
     @POST
     @Path("/login")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
     public Response checkniJmeno(User jmeno){
         UserToken token = userManager.checkniJmenos(jmeno);
         if (token == null)
@@ -59,9 +53,7 @@ public class UsersResource {
 
     @DELETE
     @Path("{id}")
-    public Response odstranUsera(@PathParam("id") int id, UserToken token) {
-        if (!loginManager.validate(token))
-            return Response.status(401).build();
+    public Response odstranUsera(@PathParam("id") int id) {
         if (userManager.odstranJmenos(id)) {
             return Response.ok("User byl odstranen ").build();
         } else {
